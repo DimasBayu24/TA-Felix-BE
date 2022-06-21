@@ -39,7 +39,6 @@ func Authenticator(c *gin.Context) (interface{}, error) {
 
 	userVals := model.User{}
 	db.DB.First(&userVals, "username = ? && password = ?", username, password)
-
 	if username == userVals.Username && password == userVals.Password {
 		return &model.User{
 			Username: username,

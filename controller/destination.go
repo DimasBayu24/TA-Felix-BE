@@ -15,9 +15,61 @@ func GetAllDestinations(c *gin.Context) {
 	c.JSON(http.StatusOK, product)
 }
 
+func GetAllPicks(c *gin.Context) {
+	type Result struct {
+		ID              int    `gorm:"column:id"`
+		DestinationCity string `gorm:"column:destination_city"`
+		Package         string `gorm:"column:package"`
+		PricePackage    int    `gorm:"column:price_package"`
+		Description     string `gorm:"column:description"`
+		PictureUrl      string `gorm:"column:picture_url"`
+		Type            string `gorm:"column:type"`
+		Size            int    `gorm:"column:size"`
+	}
+	var result []Result
+	db.DB.Raw("SELECT a.id, a.destination_city, a.package, a.price_package, a.description, a.picture_url, b.type, b.size " +
+		"FROM felix.product_packages a " +
+		"LEFT JOIN felix.transportations b " +
+		"ON a.transportation_id = b.id " +
+		"WHERE a.deleted_at IS NULL;").Scan(&result)
+
+	c.JSON(http.StatusOK, result)
+}
+
+func GetPickById(c *gin.Context) {
+	type Result struct {
+		ID              int    `gorm:"column:id"`
+		DestinationCity string `gorm:"column:destination_city"`
+		Package         string `gorm:"column:package"`
+		PricePackage    int    `gorm:"column:price_package"`
+		Description     string `gorm:"column:description"`
+		PictureUrl      string `gorm:"column:picture_url"`
+		Type            string `gorm:"column:type"`
+		Size            int    `gorm:"column:size"`
+	}
+	var result Result
+	db.DB.Raw("SELECT a.id, a.destination_city, a.package, a.price_package, a.description, a.picture_url, b.type, b.size " +
+		"FROM felix.product_packages a " +
+		"LEFT JOIN felix.transportations b " +
+		"ON a.transportation_id = b.id " +
+		"WHERE a.id = ? AND a.deleted_at IS NULL;", c.Query("id")).Scan(&result)
+
+	c.JSON(http.StatusOK, result)
+}
+
 func GetDestinationByID(c *gin.Context) {
 	var product model.Destination
 	if err := db.DB.Where("id = ?", c.Query("id")).First(&product).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
+	}
+
+	c.JSON(http.StatusOK, product)
+}
+
+func GetDestinationByPlace(c *gin.Context) {
+	var product []model.Destination
+	if err := db.DB.Where("place = ?", c.Query("place")).Find(&product).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
@@ -35,6 +87,8 @@ func PostDestination(c *gin.Context) {
 		Place:       input.Place,
 		PlaceOption: input.PlaceOption,
 		Price:       input.Price,
+		PictureUrl:  input.PictureUrl,
+		Description: input.Description,
 	}
 	db.DB.Create(&product)
 
@@ -53,8 +107,6 @@ func UpdateDestinationByID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-
 
 	db.DB.Model(&product).Updates(input)
 

@@ -35,8 +35,11 @@ func PostProductPackage(c *gin.Context) {
 
 	product := model.ProductPackage{
 		Package:          input.Package,
-		DestinationPlace: input.DestinationPlace,
-		Price:            input.Price,
+		DestinationCity:  input.DestinationCity,
+		PricePackage:     input.PricePackage,
+		Description:      input.Description,
+		TransportationID: input.TransportationID,
+		PictureUrl:       input.PictureUrl,
 	}
 	db.DB.Create(&product)
 

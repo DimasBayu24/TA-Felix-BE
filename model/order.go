@@ -6,9 +6,10 @@ import (
 
 type Order struct {
 	gorm.Model
-	UserID            string
-	Status            string
-	TransportationID  string
-	TransportationQty int
-	TotalPrice        int
+	UserID               string
+	Status               string
+	TransportationID     string
+	TransportationQty    int
+	TotalPrice           int
+	DestinationPackageID int
 }

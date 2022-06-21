@@ -53,7 +53,13 @@ func main() {
 
 	r.POST("/register", controller.Register)
 	r.POST("/login", authMiddleware.LoginHandler)
+	admin := r.Group("/admin", controller.LoginAdmin)
+	admin.POST("/login", authMiddleware.LoginHandler)
 	r.GET("/logout", authMiddleware.LogoutHandler)
+	r.GET("/tours", controller.GetAllDestinations)
+	r.GET("/picks", controller.GetAllPicks)
+	r.GET("/pick", controller.GetPickById)
+	r.GET("/tour", controller.GetDestinationByPlace)
 
 	auth := r.Group("")
 	auth.Use(authMiddleware.MiddlewareFunc())
@@ -96,6 +102,7 @@ func main() {
 		auth.PATCH("/transportation/patch", controller.UpdateTransportationByID)
 		auth.DELETE("/transportation/delete", controller.DeleteTransportationByID)
 
+		auth.POST("/upload", controller.FileUpload())
 	}
 
 	log.Fatal(r.Run(":" + port))
@@ -103,7 +110,7 @@ func main() {
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3005")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PATCH, PATCH, DELETE")

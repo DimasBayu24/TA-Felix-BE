@@ -7,6 +7,9 @@ import (
 type ProductPackage struct {
 	gorm.Model
 	Package          string
-	DestinationPlace string
-	Price            int
+	DestinationCity  string
+	PricePackage     int
+	Description      string
+	TransportationID int
+	PictureUrl       string
 }
