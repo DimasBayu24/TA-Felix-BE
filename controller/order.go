@@ -110,6 +110,10 @@ func CustomerCreateOrder(c *gin.Context) {
 	}
 	db.DB.Create(&product)
 
+	strID := strconv.Itoa(int(product.ID))
+
+	helper.SentEmail(strID, product.Email)
+
 	c.JSON(http.StatusCreated, product)
 }
 

@@ -14,13 +14,13 @@ m := gomail.NewMessage()
 m.SetHeader("From", "dimasbayuseno@gmail.com")
 
 // Set E-Mail receivers
-m.SetHeader("To", "dbswhnp@gmail.com")
+m.SetHeader("To", email)
 
 // Set E-Mail subject
 m.SetHeader("Subject", "Gomail test subject")
 
 // Set E-Mail body. You can set plain text or html with text/html
-m.SetBody("text/plain", "Here's link to upload your payment http://localhost:3000/custom-destination and your payment id is " + id)
+m.SetBody("text/plain", "Here's link to upload your payment http://localhost:3000/upload-payment and your payment id is " + id)
 
 // Settings for SMTP server
 d := gomail.NewDialer("smtp.gmail.com", 465, "dimasbayuseno@gmail.com", "msqcyypevyccodvh")
