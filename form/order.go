@@ -7,10 +7,10 @@ import (
 
 type Order struct {
 	gorm.Model
-	Status               string     `json:"Status" binding:"required"`
-	TotalPrice           int        `json:"TotalPrice" binding:"required"`
-	TransportationID     int        `json:"TransportationID" binding:"required"`
-	TransportationQty    int        `json:"TransportationQty" binding:"required"`
+	Status               string     `json:"Status"`
+	TotalPrice           int        `json:"TotalPrice"`
+	TransportationID     int        `json:"TransportationID"`
+	TransportationQty    int        `json:"TransportationQty"`
 	Fullname             string     `json:"Fullname"`
 	DestinationPackageID *int       `json:"DestinationPackageID"`
 	IsPackage            bool       `json:"IsPackage"`

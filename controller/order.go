@@ -2,10 +2,13 @@ package controller
 
 import (
 	"fmt"
+	"gorm.io/gorm"
 	"net/http"
 	"product-api/db"
 	"product-api/form"
+	"product-api/helper"
 	"product-api/model"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -66,6 +69,7 @@ func UpdateOrderByID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	fmt.Println("tes aja", input)
 	fmt.Println("tes aja", input)
 	db.DB.Model(&product).Updates(input)
 
@@ -157,5 +161,37 @@ func CustomerCreateOrderCustom(c *gin.Context) {
 		db.DB.Create(&productItem)
 	}
 
+	strID := strconv.Itoa(int(product.ID))
+
+	helper.SentEmail(strID, product.Email)
+
 	c.JSON(http.StatusCreated, product)
+}
+
+func UpdatePaymentByID(c *gin.Context) {
+	var product model.Order
+	if err := db.DB.Where("id = ?", c.Query("id")).First(&product).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
+	}
+
+	var input form.Order
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Println("tes aja", input)
+	fmt.Println("tes aja", input.PictureUrl)
+	fmt.Println("tes aja", input.ID)
+
+	updateInput := model.Order{
+		Model:                gorm.Model{
+			ID:        input.ID,
+		},
+		PictureUrl:           input.PictureUrl,
+	}
+
+	db.DB.Model(&product).Updates(updateInput)
+
+	c.JSON(http.StatusOK, product)
 }

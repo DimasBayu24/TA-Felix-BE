@@ -65,6 +65,8 @@ func main() {
 	r.POST("/order/custom", controller.CustomerCreateOrderCustom)
 	r.GET("/transportations-custom", controller.GetAllTransportationsCustom)
 	r.GET("/transportation-custom", controller.GetTransportationByIDCustom)
+	r.POST("/upload", controller.FileUpload())
+	r.PATCH("/upload-payment/patch", controller.UpdatePaymentByID)
 
 	auth := r.Group("")
 	auth.Use(authMiddleware.MiddlewareFunc())
@@ -107,7 +109,6 @@ func main() {
 		auth.PATCH("/transportation/patch", controller.UpdateTransportationByID)
 		auth.DELETE("/transportation/delete", controller.DeleteTransportationByID)
 
-		auth.POST("/upload", controller.FileUpload())
 	}
 
 	log.Fatal(r.Run(":" + port))
@@ -118,7 +119,7 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PATCH, PATCH, DELETE")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, PATCH, DELETE")
 
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
