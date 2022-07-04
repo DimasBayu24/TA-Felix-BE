@@ -69,9 +69,20 @@ func UpdateOrderByID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	productInput := model.Order{
+		Model:                gorm.Model{
+			ID:        input.ID,
+		},
+		Status:               input.Status,
+
+	}
+
 	fmt.Println("tes aja", input)
 	fmt.Println("tes aja", input)
-	db.DB.Model(&product).Updates(input)
+	db.DB.Model(&product).Updates(productInput)
+
+	helper.SentEmailConfirmation(product.Fullname, product.OrderDate.Format("2006-01-02 15:04:05"), product.Email)
 
 	c.JSON(http.StatusOK, product)
 }
