@@ -10,4 +10,5 @@ type ProductPackage struct {
 	Description      string `json:"Description" binding:"required"`
 	TransportationID int    `json:"TransportationID" binding:"required"`
 	PictureUrl       string `json:"PictureUrl" binding:"required"`
+	Duration         int    `json:"Duration"`
 }

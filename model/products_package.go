@@ -12,4 +12,5 @@ type ProductPackage struct {
 	Description      string
 	TransportationID int
 	PictureUrl       string
+	Duration         int
 }

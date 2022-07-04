@@ -16,7 +16,24 @@ func GetAllTransportations(c *gin.Context) {
 	c.JSON(http.StatusOK, product)
 }
 
+func GetAllTransportationsCustom(c *gin.Context) {
+	var product []model.Transportation
+	db.DB.Find(&product)
+
+	c.JSON(http.StatusOK, product)
+}
+
 func GetTransportationByID(c *gin.Context) {
+	var product model.Transportation
+	if err := db.DB.Where("id = ?", c.Query("id")).First(&product).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
+	}
+
+	c.JSON(http.StatusOK, product)
+}
+
+func GetTransportationByIDCustom(c *gin.Context) {
 	var product model.Transportation
 	if err := db.DB.Where("id = ?", c.Query("id")).First(&product).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})

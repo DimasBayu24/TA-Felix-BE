@@ -4,6 +4,6 @@ import "gorm.io/gorm"
 
 type OrderItem struct {
 	gorm.Model
-	OrderID       string `json:"OrderID" binding:"required"`
-	DestinationID string   `json:"DestinationID" binding:"required"`
+	OrderID       int `json:"OrderID" binding:"required"`
+	DestinationID int   `json:"DestinationID" binding:"required"`
 }

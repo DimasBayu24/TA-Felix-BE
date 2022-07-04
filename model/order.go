@@ -2,14 +2,21 @@ package model
 
 import (
 	"gorm.io/gorm"
+	"time"
 )
 
 type Order struct {
 	gorm.Model
-	UserID               string
+	Fullname             string
 	Status               string
-	TransportationID     string
+	TransportationID     int
 	TransportationQty    int
 	TotalPrice           int
-	DestinationPackageID int
+	DestinationPackageID *int
+	IsPackage            bool
+	Email                string
+	Phone                string
+	OrderDate            *time.Time
+	PictureUrl           string
+	Duration             int
 }

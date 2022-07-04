@@ -35,6 +35,7 @@ func SetupDatabaseConnection() *gorm.DB {
 	database.AutoMigrate(&model.User{})
 	database.AutoMigrate(&model.Destination{})
 	database.AutoMigrate(&model.Order{})
+	database.AutoMigrate(&model.OrderItem{})
 	database.AutoMigrate(&model.ProductPackage{})
 	database.AutoMigrate(&model.Transportation{})
 

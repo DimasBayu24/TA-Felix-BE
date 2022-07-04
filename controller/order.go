@@ -6,6 +6,7 @@ import (
 	"product-api/db"
 	"product-api/form"
 	"product-api/model"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,11 +36,18 @@ func PostOrder(c *gin.Context) {
 	}
 
 	product := model.Order{
-		UserID:            input.UserID,
-		Status:            input.Status,
-		TransportationID:  input.TransportationID,
-		TransportationQty: input.TransportationQty,
-		TotalPrice:        input.TotalPrice,
+		Fullname:             input.Fullname,
+		Status:               input.Status,
+		TransportationID:     input.TransportationID,
+		TransportationQty:    input.TransportationQty,
+		TotalPrice:           input.TotalPrice,
+		DestinationPackageID: input.DestinationPackageID,
+		IsPackage:            input.IsPackage,
+		Email:                input.Email,
+		Phone:                input.Phone,
+		OrderDate:            input.OrderDate,
+		Duration:             input.Duration,
+		PictureUrl:           input.PictureUrl,
 	}
 	db.DB.Create(&product)
 
@@ -74,4 +82,80 @@ func DeleteOrderByID(c *gin.Context) {
 	db.DB.Delete(&product)
 
 	c.JSON(http.StatusOK, gin.H{"data": true})
+}
+
+func CustomerCreateOrder(c *gin.Context) {
+	var input form.Order
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	product := model.Order{
+		Fullname:             input.Fullname,
+		Status:               input.Status,
+		TransportationID:     input.TransportationID,
+		TransportationQty:    input.TransportationQty,
+		TotalPrice:           input.TotalPrice,
+		DestinationPackageID: input.DestinationPackageID,
+		IsPackage:            input.IsPackage,
+		Email:                input.Email,
+		Phone:                input.Phone,
+		OrderDate:            input.OrderDate,
+		Duration:             input.Duration,
+	}
+	db.DB.Create(&product)
+
+	c.JSON(http.StatusCreated, product)
+}
+
+func CustomerCreateOrderCustom(c *gin.Context) {
+	type Result struct {
+		Status               string     `json:"Status" binding:"required"`
+		TotalPrice           int        `json:"TotalPrice" binding:"required"`
+		TransportationID     int        `json:"TransportationID" binding:"required"`
+		TransportationQty    int        `json:"TransportationQty" binding:"required"`
+		Fullname             string     `json:"Fullname"`
+		DestinationPackageID *int       `json:"DestinationPackageID"`
+		IsPackage            bool       `json:"IsPackage"`
+		Email                string     `json:"Email"`
+		Phone                string     `json:"Phone"`
+		OrderDate            *time.Time `json:"OrderDate"`
+		Duration             int        `json:"Duration"`
+		ArrOrderItem         []int      `json:"ArrOrderItem"`
+	}
+
+	var result Result
+
+	if err := c.BindJSON(&result); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	product := model.Order{
+		Fullname:             result.Fullname,
+		Status:               result.Status,
+		TransportationID:     result.TransportationID,
+		TransportationQty:    result.TransportationQty,
+		TotalPrice:           result.TotalPrice,
+		DestinationPackageID: result.DestinationPackageID,
+		IsPackage:            result.IsPackage,
+		Email:                result.Email,
+		Phone:                result.Phone,
+		OrderDate:            result.OrderDate,
+		Duration:             result.Duration,
+	}
+	db.DB.Create(&product)
+
+	fmt.Println(product.ID)
+
+	for i := range  result.ArrOrderItem {
+		productItem := model.OrderItem{
+			OrderID:       int(product.ID),
+			DestinationID: result.ArrOrderItem[i],
+		}
+		db.DB.Create(&productItem)
+	}
+
+	c.JSON(http.StatusCreated, product)
 }

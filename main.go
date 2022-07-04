@@ -58,8 +58,13 @@ func main() {
 	r.GET("/logout", authMiddleware.LogoutHandler)
 	r.GET("/tours", controller.GetAllDestinations)
 	r.GET("/picks", controller.GetAllPicks)
+	r.GET("/cities", controller.GetAllCities)
 	r.GET("/pick", controller.GetPickById)
 	r.GET("/tour", controller.GetDestinationByPlace)
+	r.POST("/order/package", controller.CustomerCreateOrder)
+	r.POST("/order/custom", controller.CustomerCreateOrderCustom)
+	r.GET("/transportations-custom", controller.GetAllTransportationsCustom)
+	r.GET("/transportation-custom", controller.GetTransportationByIDCustom)
 
 	auth := r.Group("")
 	auth.Use(authMiddleware.MiddlewareFunc())
@@ -110,7 +115,7 @@ func main() {
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3005")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PATCH, PATCH, DELETE")
