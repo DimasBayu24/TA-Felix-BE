@@ -125,6 +125,18 @@ func CustomerCreateOrder(c *gin.Context) {
 
 	helper.SentEmail(strID, product.Email)
 
+	customerData := form.Customer{
+		Fullname: input.Fullname,
+		Email:    input.Email,
+		Phone:    input.Phone,
+	}
+
+	err := CreateCustomer(customerData)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "error create customer"})
+
+	}
+
 	c.JSON(http.StatusCreated, product)
 }
 
@@ -180,6 +192,18 @@ func CustomerCreateOrderCustom(c *gin.Context) {
 
 	helper.SentEmail(strID, product.Email)
 
+	customerData := form.Customer{
+		Fullname: result.Fullname,
+		Email:    result.Email,
+		Phone:    result.Phone,
+	}
+
+	err := CreateCustomer(customerData)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "error create customer"})
+
+	}
+
 	c.JSON(http.StatusCreated, product)
 }
 
@@ -209,4 +233,20 @@ func UpdatePaymentByID(c *gin.Context) {
 	db.DB.Model(&product).Updates(updateInput)
 
 	c.JSON(http.StatusOK, product)
+}
+
+func CreateCustomer( input form.Customer )(err error) {
+
+
+	product := model.Customer{
+		Email:    input.Email,
+		Phone:    input.Phone,
+		Fullname: input.Fullname,
+	}
+	err = db.DB.Create(&product).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
